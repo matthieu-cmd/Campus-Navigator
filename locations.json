@@ -159,8 +159,10 @@
     { "building": "BPML", "floor": "2", "roomCode": "BPML 2.05", "coords": { "lat": -20.17746, "lng": 57.46953 } },
     { "building": "BPML", "floor": "2", "roomCode": "BPML 2.06", "coords": { "lat": -20.17746, "lng": 57.46953 } },
     { "building": "BPML", "floor": "2", "roomCode": "BPML 2.07", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-    { "building": "BPML", "floor": "2", "roomCode": "BPML 2.08", "coords": { "lat": -20.17746, "lng": 57.46953 } }
+    { "building": "BPML", "floor": "2", "roomCode": "BPML 2.08", "coords": { "lat": -20.17746, "lng": 57.46953 } },
+    { "building": "test", "floor": "1", "roomCode": "BPML 0.00", "coords": { "lat": -20.49841, "lng": 57.38877 } }
 
   ]
 }
+
 
