@@ -216,7 +216,22 @@
     <script src="class manager.js"></script>
 
     <script>
-
+        fetch('locations.json')
+        .then(response => response.json())
+        .then(data => {
+            
+            window.roomLookup = {};
+            data.rooms.forEach(room => {
+                const upperCaseCode = room.roomCode.trim().toUpperCase(); 
+                window.roomLookup[upperCaseCode] = room;
+            });
+            console.log("Room data loaded:", Object.keys(window.roomLookup).length, "rooms");
+        })
+        .catch(error => {
+            console.error("Error loading locations.json:", error);
+            window.roomLookup = {}; // Empty fallback
+        });
+        
         window.roomLookup = {};
         rawRoomsData.forEach(room => {
             if (room.coords.x && room.coords.y) {
