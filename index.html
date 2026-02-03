@@ -244,7 +244,13 @@ async function loadRoomsData() {
         console.error('Failed to load room data:', err);
     }
 }
+        // Initialize the app
+loadRoomsData().then(() => {
+    console.log('App initialized with room data');
+}).catch(err => {
+    console.error('Failed to load room data:', err);
 });
+
 
        
 
@@ -278,7 +284,7 @@ async function loadRoomsData() {
         let destinationPin = null;
         let destinationLatlng = null;
         let directionArrowMarker = null;
-        let currentDestiantionInfo = null;
+        let currentDestinationInfo = null;
         const ARROW_PIXEL_OFFSET = 30; 
 
         function startLiveLocation() {
@@ -769,7 +775,8 @@ async function loadRoomsData() {
             }
         }
 
-            
+    function vibrateAndShowFunSpots(source = 'click') {
+        console.log("🎯 Vibrating and showing Fun Spots...");
             // Vibrate with a fun pattern
         if (window.DeviceFeatures) {
             window.DeviceFeatures.vibratePattern([50, 30, 100, 30, 200]);
@@ -840,15 +847,12 @@ async function loadRoomsData() {
                 alert("Shake detection disabled.");
             }
         }
-
         
         // Initial Call ---
         startLiveLocation();
         renderSidePanelClasses();
         
     </script>
-
-    
 
 </body>
 </html>
