@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <script src="device-features.js" ></script>
+    <script src="device-features.js"></script>
     <link rel="manifest" href="manifest.json">
     <style>
         #map { height: 100vh; width: 100vw; }
@@ -244,26 +244,9 @@ async function loadRoomsData() {
         console.error('Failed to load room data:', err);
     }
 }
-
-
-loadRoomsData().then(() => {
-    renderSidePanelClasses(); // safe to render after data is loaded
-    startLiveLocation();       // start GPS only after data is ready
 });
 
        
-
-        window.roomLookup = {};
-        rawRoomsData.forEach(room => {
-            if (room.coords.x && room.coords.y) {
-            room.coords.lat = room.coords.x;
-            room.coords.lng = room.coords.y;
-            delete room.coords.x;
-            delete room.coords.y;
-            }
-            const upperCaseCode = room.roomCode.trim().toUpperCase(); 
-            roomLookup[upperCaseCode] = room;
-        });
 
         const funSpotsData = [
             { name: "Student Common (Games)", lat: -20.177465798857607, lng: 57.46780282802911, icon: 'sports_esports', color: '#1E90FF' }, // Dodger Blue
@@ -395,9 +378,11 @@ loadRoomsData().then(() => {
             clearFunSpotMarkers();
             
             
-            if (navigator.vibrate) {
-                navigator.vibrate([100, 50, 100]); 
-            }
+             if (window.DeviceFeatures) {
+                window.DeviceFeatures.vibratePattern([100, 50, 100]);
+             } else if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+             }
             
             // 5. Show success notification
             if (currentGPSLatlng) {
@@ -671,8 +656,10 @@ loadRoomsData().then(() => {
                 
                 // If within 20 meters, vibrate and show alert
                 if (distance <= DESTINATION_PROXIMITY_METERS) {
-                    if (navigator.vibrate) {
-                        navigator.vibrate([80, 40, 80]); //pattern
+                    if (window.DeviceFeatures) {
+                        window.DeviceFeatures.vibrateSuccess();
+                    } else if (navigator.vibrate) {
+                        navigator.vibrate([80, 40, 80]);
                     }
                     
                     
@@ -717,26 +704,16 @@ loadRoomsData().then(() => {
         // Initialize shake-to-show-funspots feature
         async function initShakeDetection() {
             try {
-               
-                // Check if device orientation is supported
-                if (!("DeviceOrientationEvent" in window)) {
-                    console.log("Device orientation not supported");
-                    return;
+                 if (!window.DeviceFeatures) {
+                    console.log("DeviceFeatures not available");
+                return false;
                 }
                 
-                // Request permission for iOS 13+
-                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                    try {
-                        const permission = await DeviceOrientationEvent.requestPermission();
-                        if (permission !== 'granted') {
-                            console.log("Device orientation permission denied");
-                            return;
+                const success = await window.DeviceFeatures.enableDeviceOrientation();
+                        if (!success) {
+                            console.log("Failed to enable device orientation");
+                            return false;
                         }
-                    } catch (error) {
-                        console.log("Device orientation permission error:", error);
-                        return;
-                    }
-                }
                 
                 // Simple shake detection variables
                 let lastShakeTime = 0;
@@ -744,13 +721,9 @@ loadRoomsData().then(() => {
                 const SHAKE_COOLDOWN = 2000; // 2 seconds
                 
                 // Handle device orientation
-                window.addEventListener('deviceorientation', (event) => {
+                window.addEventListener('deviceorientation', function handleShake(event) {
                     const now = Date.now();
-                    
-                    // Check cooldown
-                    if (now - lastShakeTime < SHAKE_COOLDOWN) {
-                        return;
-                    }
+                    if (now - lastShakeTime < SHAKE_COOLDOWN) return;
                     
                     const { beta, gamma } = event;
                     
@@ -767,46 +740,46 @@ loadRoomsData().then(() => {
                         
                         lastShakeTime = now;
                         
-                        // Vibrate to acknowledge shake
-                        if (navigator.vibrate) {
-                            navigator.vibrate([60, 40, 60, 40, 60]); // Warning pattern
+                        if (window.DeviceFeatures) {
+                            window.DeviceFeatures.vibrateWarning();
+                        } else if (navigator.vibrate) {
+                            navigator.vibrate([60, 40, 60, 40, 60]);
                         }
                         
                         // Show fun spots
                         vibrateAndShowFunSpots('shake');
                         
-                        const notification = L.popup()
-                            .setLatLng(currentGPSLatlng || [UNIVERSITY_LAT, UNIVERSITY_LNG])
-                            .setContent("🎉 Shake detected! Showing Fun Spots!")
-                            .openOn(map);
-                        
-                        // Auto-close notification after 3 seconds
-                        setTimeout(() => {
-                            map.closePopup(notification);
-                        }, 3000);
+                         if (currentGPSLatlng) {
+                            const notification = L.popup()
+                                .setLatLng(currentGPSLatlng)
+                                .setContent("🎉 Shake detected! Showing Fun Spots!")
+                                .openOn(map);
+                    
+                    setTimeout(() => map.closePopup(notification), 3000);
+                        }
                     }
                 });
                 
                 console.log("Shake detection enabled");
+                return true;
                 
             } catch (error) {
                 console.error("Failed to initialize shake detection:", error);
+                return false;
             }
         }
 
-
-                //Vibrate and show Fun Spots (used for both menu click and shake)
-        function vibrateAndShowFunSpots(source = 'click') {
-            console.log("🎯 Vibrating and showing Fun Spots...");
             
             // Vibrate with a fun pattern
-            if (navigator.vibrate) {
-                navigator.vibrate([50, 30, 100, 30, 200]);
-                console.log("📳 Vibration triggered");
-            } else {
-                console.log("⚠️ Vibration not supported");
-            }
-            
+        if (window.DeviceFeatures) {
+            window.DeviceFeatures.vibratePattern([50, 30, 100, 30, 200]);
+            console.log("📳 Vibration triggered via DeviceFeatures");
+        } else if (navigator.vibrate) {
+            navigator.vibrate([50, 30, 100, 30, 200]);
+            console.log("📳 Vibration triggered via navigator");
+        } else {
+            console.log("⚠️ Vibration not supported");
+        }
             //  Show the Fun Spots
             showFunSpots();
             
