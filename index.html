@@ -232,17 +232,6 @@
             window.roomLookup = {}; // Empty fallback
         });
         
-        window.roomLookup = {};
-        rawRoomsData.forEach(room => {
-            if (room.coords.x && room.coords.y) {
-            room.coords.lat = room.coords.x;
-            room.coords.lng = room.coords.y;
-            delete room.coords.x;
-            delete room.coords.y;
-            }
-            const upperCaseCode = room.roomCode.trim().toUpperCase(); 
-            roomLookup[upperCaseCode] = room;
-        });
 
         const funSpotsData = [
             { name: "Student Common (Games)", lat: -20.177465798857607, lng: 57.46780282802911, icon: 'sports_esports', color: '#1E90FF' }, // Dodger Blue
@@ -252,8 +241,6 @@
         ];
 
         let funSpotMarkers = [];
-
-        
         //  Map Initialization 
         const UNIVERSITY_LAT = -20.17683;
         const UNIVERSITY_LNG = 57.46730;
