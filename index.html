@@ -216,63 +216,42 @@
     <script src="class manager.js"></script>
 
     <script>
+        window.roomLookup = {};
+let rawRoomsData = [];
+
+async function loadRoomsData() {
+    try {
+        const response = await fetch('locations.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json(); // JSON has { "rooms": [...] }
+
+        rawRoomsData = data.rooms || [];
+
         
-        const rawRoomsData = [
-            
-            { "building": "UTM", "floor": "2", "roomCode": "B1.07", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "2", "roomCode": "B1.06", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "2", "roomCode": "B1.05", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "2", "roomCode": "B1.03", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "2", "roomCode": "B1.101", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "1", "roomCode": "C0.01", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "1", "roomCode": "D0.05", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "1", "roomCode": "D0.02", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "UTM", "floor": "1", "roomCode": "D0.01", "coords": { "lat": -20.17683, "lng": 57.46730 } },
-            { "building": "SITE", "floor": "1", "roomCode": "Lab G1.01", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "2", "roomCode": "Lab G1.3", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "2", "roomCode": "Lab G1.1", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "2", "roomCode": "Lab G1.5", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "2", "roomCode": "Lab G1.2", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "2", "roomCode": "Lab G1.5", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "SITE", "floor": "3", "roomCode": "Administration", "coords": { "lat": -20.17741, "lng": 57.46761 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.3",  "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.02", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.01", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.12", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.11", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML Business Incubator", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.09", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.08", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.04", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "0", "roomCode": "BPML 0.05", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.09", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.10", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.11", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.04", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.12", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.13", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.14", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.01", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.02", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.03", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.05", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.06", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.07", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "1", "roomCode": "BPML 1.08", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.09", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.10", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.11", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.13", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.14", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.02", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.03", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.04", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.05", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.06", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.07", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "BPML", "floor": "2", "roomCode": "BPML 2.08", "coords": { "lat": -20.17746, "lng": 57.46953 } },
-            { "building": "test", "floor": "1", "roomCode": "BPML 0.00", "coords": { "lat": -20.49841, "lng": 57.38877 } }
-        ];
+        rawRoomsData.forEach(room => {
+            if (room.coords.x && room.coords.y) {
+                room.coords.lat = room.coords.x;
+                room.coords.lng = room.coords.y;
+                delete room.coords.x;
+                delete room.coords.y;
+            }
+            const upperCaseCode = room.roomCode.trim().toUpperCase();
+            roomLookup[upperCaseCode] = room;
+        });
+
+        console.log('Rooms data loaded successfully!');
+    } catch (err) {
+        console.error('Failed to load room data:', err);
+    }
+}
+
+
+loadRoomsData().then(() => {
+    renderSidePanelClasses(); // safe to render after data is loaded
+    startLiveLocation();       // start GPS only after data is ready
+});
+
+       
 
         window.roomLookup = {};
         rawRoomsData.forEach(room => {
