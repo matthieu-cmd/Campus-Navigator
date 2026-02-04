@@ -106,7 +106,6 @@
             font-size: 36px;
             color: #28a745; 
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            /* Important: Rotation needs a transform-origin of center */
             transform-origin: center center; 
         }
         
@@ -223,7 +222,7 @@ async function loadRoomsData() {
     try {
         const response = await fetch('locations.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json(); // JSON has { "rooms": [...] }
+        const data = await response.json(); 
 
         rawRoomsData = data.rooms || [];
 
@@ -244,15 +243,13 @@ async function loadRoomsData() {
         console.error('Failed to load room data:', err);
     }
 }
-        // Initialize the app
+        
 loadRoomsData().then(() => {
     console.log('App initialized with room data');
 }).catch(err => {
     console.error('Failed to load room data:', err);
 });
 
-
-       
 
         const funSpotsData = [
             { name: "Student Common (Games)", lat: -20.177465798857607, lng: 57.46780282802911, icon: 'sports_esports', color: '#1E90FF' }, // Dodger Blue
@@ -390,7 +387,7 @@ loadRoomsData().then(() => {
                 navigator.vibrate([100, 50, 100]);
              }
             
-            // 5. Show success notification
+            //  Show success notification
             if (currentGPSLatlng) {
                 const notification = L.popup()
                     .setLatLng(currentGPSLatlng)
@@ -531,7 +528,7 @@ loadRoomsData().then(() => {
             });
         }
         
-        // Modify the existing togglePanel function 
+      
         function togglePanel() {
             const panel = document.getElementById('side-panel');
             panel.classList.toggle('open');
@@ -839,13 +836,6 @@ loadRoomsData().then(() => {
                     document.getElementById('shake-button').innerHTML = '<i class="material-icons">check</i>';
                     alert("Shake detection enabled! Shake your device to show Fun Spots.");
                 }
-            } else {
-                // Disable shake detection
-                shakeDetectionEnabled = false;
-                document.getElementById('shake-button').style.backgroundColor = '#FF9800';
-                document.getElementById('shake-button').innerHTML = '<i class="material-icons">vibration</i>';
-                alert("Shake detection disabled.");
-            }
         }
         
         // Initial Call ---
