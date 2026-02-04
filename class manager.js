@@ -17,7 +17,6 @@ function saveClasses(classes) {
 
 // Rendering Functions ---
 function getLocationDetails(code) {
-    // roomLookup is defined in index.html, which is accessible here
     return window.roomLookup ? window.roomLookup[code.toUpperCase()] : null;
 }
 
@@ -128,7 +127,7 @@ function editClass(oldCode) {
 
     const newCodeUpper = newCode.trim().toUpperCase();
 
-    // Check if new code conflicts with existing codes (unless it's the same class)
+    
     if (newCodeUpper !== oldCode && classes.some(cls => cls.code === newCodeUpper)) {
         alert(`The new code ${newCodeUpper} is already in use.`);
         return;
@@ -147,9 +146,8 @@ function editClass(oldCode) {
     }
 }
 
-// Attach functions to the global scope so they can be called from index.html (modal buttons)
+
 window.loadClasses = loadClasses; 
 window.renderClassList = renderClassList;
 window.deleteClass = deleteClass;
 window.editClass = editClass;
-
